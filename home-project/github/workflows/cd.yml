@@ -1,9 +1,11 @@
 name: CD Pipeline
 
-on:
+'on':
   workflow_run:
-    workflows: ["CI Pipeline"]
-    types: [ "completed" ]
+    workflows:
+      - CI Pipeline
+    types:
+      - completed
 
 jobs:
   deploy:
