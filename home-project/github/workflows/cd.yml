@@ -1,17 +1,21 @@
 name: CD Pipeline
 
-on:
+'on':
   workflow_run:
-    workflows: ["CI Pipeline"]
-    types: [ "completed" ]
+    workflows:
+      - CI Pipeline
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: taskdef
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -24,5 +28,5 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: taskdef.json
-          service: my-service
-          cluster: my-cluster
+          service: static-app-service
+          cluster: static-app-cluster
