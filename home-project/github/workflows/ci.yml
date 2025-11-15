@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-and-push:
     runs-on: ubuntu-22.04
 
     steps:
@@ -24,9 +24,40 @@ jobs:
 
       - name: Build Docker image
         run: |
+          cd home-project/ststic-app
           docker build -t static-app .
+
+      - name: Tag image
+        run: |
           docker tag static-app:latest ${{ secrets.ECR_REPO_URL }}:latest
 
-      - name: Push Docker image
+      - name: Push to ECR
         run: |
           docker push ${{ secrets.ECR_REPO_URL }}:latest
+
+      - name: Generate task definition
+        run: |
+          echo '{
+            "family": "static-app-task",
+            "networkMode": "awsvpc",
+            "executionRoleArn": "arn:aws:iam::886557786805:role/ecsTaskExecutionRole",
+            "containerDefinitions": [
+              {
+                "name": "static-app-container",
+                "image": "'${{ secrets.ECR_REPO_URL }}:latest'",
+                "portMappings": [
+                  { "containerPort": 80, "hostPort": 80 }
+                ],
+                "essential": true
+              }
+            ],
+            "requiresCompatibilities": ["FARGATE"],
+            "cpu": "256",
+            "memory": "512"
+          }' > taskdef.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: taskdef
+          path: taskdef.json
