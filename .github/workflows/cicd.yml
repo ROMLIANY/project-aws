@@ -64,5 +64,5 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: taskdef.json
-          service: static-app-service
+          service: static-app-task-service-8u9ywe9x
           cluster: static-app-cluster
