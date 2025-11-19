@@ -28,11 +28,11 @@ jobs:
           docker build -t static-app .
 
       - name: Tag image
-        run: |
+        run:
           docker tag static-app:latest ${{ secrets.ECR_REPO_URL }}:latest
 
       - name: Push to ECR
-        run: |
+        run:
           docker push ${{ secrets.ECR_REPO_URL }}:latest
 
       - name: Generate task definition
@@ -44,7 +44,7 @@ jobs:
             "containerDefinitions": [
               {
                 "name": "static-app-container",
-                "image": "'${{ secrets.ECR_REPO_URL }}:latest'",
+                "image": "${{ secrets.ECR_REPO_URL }}:latest",
                 "portMappings": [
                   { "containerPort": 80, "hostPort": 80 }
                 ],
