@@ -26,6 +26,10 @@ jobs:
         run: |
           cd home-project/ststic-app
           docker build -t static-app .
+    
+      - name: Debug ECR_REPO_URL
+        run: echo "ECR_REPO_URL=${{ secrets.ECR_REPO_URL }}"
+
 
       - name: Tag image
         run:
