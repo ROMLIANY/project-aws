@@ -66,3 +66,5 @@ jobs:
           name: taskdef
           path: taskdef.json
 
+      - name: list artifacts
+        run: ls -l
