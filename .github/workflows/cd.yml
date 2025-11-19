@@ -3,7 +3,8 @@ name: CD Pipeline
 on:
   workflow_run:
     workflows: ["CI Pipeline"]
-    types: [ "completed" ]
+    types:
+      - completed
 
 jobs:
   deploy:
@@ -14,6 +15,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: taskdef
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
