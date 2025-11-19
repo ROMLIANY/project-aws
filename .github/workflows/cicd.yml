@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -60,11 +60,9 @@ jobs:
             "memory": "512"
           }' > taskdef.json
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          name: taskdef
-          path: taskdef.json
-
-      - name: list artifacts
-        run: ls -l
+          task-definition: taskdef.json
+          service: static-app-service
+          cluster: static-app-cluster
